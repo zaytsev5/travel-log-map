@@ -94,3 +94,6 @@ input{
   font-size: 15px;
   height: 50px;
 }
+.mapboxgl-ctrl-logo , .mapboxgl-ctrl-bottom-right{
+  visibility: hidden;
+}
