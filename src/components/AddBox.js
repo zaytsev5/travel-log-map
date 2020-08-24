@@ -7,7 +7,6 @@ const AddBox = ({reload,logged,name}) =>{
     const [latitude, setlatitude] = useState("");
     const [longitude, setlongitude] = useState("");
     const [comments, setcomments] = useState("");
-    const [author, setauthor] = useState("");
     const [visitDate, setvisitDate] = useState("");
     const [image, setimage] = useState("");
     const [loading, setLoad] = useState(false)

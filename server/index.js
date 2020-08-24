@@ -3,6 +3,7 @@ var express = require('express');
 var app = express()
 var multer = require('multer'); 
 var path = require('path')
+var FB = require('fb')
 var mongoose = require('mongoose')
 //var User = require('./models/Users')
 var Log = require('./models/Log')
@@ -55,22 +56,36 @@ passport.use(new FacebookStrategy({
   enableProof: true
 },
 function(accessToken, refreshToken, profile, done) {
-  console.log(profile._json.name);
-  User.findOne({email:profile._json.email})
-  .then(async user =>{
-    if(user) return done(null,profile)
-    console.log("Not logged yet");
-    //adding user to mongodb 
-    const newUser = new User({
-      id : profile._json.id,
-      name: profile._json.name,
-      email: profile._json.email,
-      password: Math.random().toString(16).substring(8),
-      image:profile._json.picture.data.url
-    })
-    newUser.save()
-    .then(res => done(null, profile))
+  console.log(profile._json);
+  // console.log(accessToken);
+
+  User.findOneAndUpdate({ id: profile._json.id },{ image: profile._json.picture.data.url },{
+    new: true
   })
+    .then(async user => {
+      if (user) {
+      //  User.findOneAndUpdate({ id: profile._json.id }, { image: profile._json.picture.data.url }, function (error, result) {
+       //   if (error) return;
+          console.log("OK");
+
+          return done(null, profile);
+          //     // do something with the document
+       // });
+      } else {
+        console.log("Not logged yet");
+        //adding user to mongodb 
+        const newUser = new User({
+          id: profile._json.id,
+          name: profile._json.name,
+          email: profile._json.email,
+          password: Math.random().toString(16).substring(8),
+          image: profile._json.picture.data.url
+        })
+        newUser.save()
+          .then(res => done(null, profile))
+      }
+
+    })
     
 
 }
@@ -117,9 +132,9 @@ const fowardAuthicated = (req, res, next) =>{
 app.get('/get/comments',async (req, res)=>{
   const index = req.query.index
   const action = req.query.action
-  
-    const comments = await Post.find().skip(parseInt(index) > 0 ? parseInt(index)-5 : 0).limit(limit)
-    res.json(comments)
+
+  const comments = await Post.find().skip(parseInt(index) > 0 ? parseInt(index) - 5 : 0).limit(limit)
+  res.json(comments)
 
   // console.log(index);
   // res.send({index,action})
@@ -146,7 +161,15 @@ app.get("/auth/login/success", fowardAuthicated,(req, res) => {
 });
 
 app.get('/user',(req, res)=>{
-  res.json(user)
+    console.log(req.user.id);
+    User.findOne({id: req.user.id}, (err, user) => {
+      if (err) return res.send("error");
+      console.log(user);
+      FB.setAccessToken(user.accessToken);
+      FB.api('/me/accounts', (pages) => {
+          console.log(pages);
+      });
+  });
 })
 
 app.get('/logout', (req, res) => {
@@ -177,26 +200,27 @@ app.get("/auth/login/failed", (req, res) => {
 });
 
 app.get('/log/:id', (req, res) => {
-  Log.find({id:req.params.id})
-  //.then(posts => res.json(posts) )
-     .populate('uid')
-     .exec(async(err,post)=>{
-         if(err) return console.log(err); 
-         console.log(post);
-         res.json(post)
-     })
+  Log.find({ id: req.params.id })
+    //.then(posts => res.json(posts) )
+    .populate('uid')
+    .exec(async (err, post) => {
+      if (err) return console.log(err);
+      console.log(post);
+      res.json(post)
+    })
   // const filter = await  Post.find().then(posts => posts.filter(post => post.user == '5f0c8313f199812daddd0d8a') )
 })
 
-app.get('/api/:log/cmts', (req, res) => {
-  Post.find({lid:req.params.log})
-  // .limit(5)
-  //.then(posts => res.json(posts) )
-     .populate('uid')
-     .exec(async(err,post)=>{
-         if(err) return console.log(err); 
-         res.json(post)
-     })
+app.get('/api/:log/cmts/:limit', (req, res) => {
+  Post.find({ lid: req.params.log })
+    // .limit(5)
+    //.then(posts => res.json(posts) )
+    .limit(parseInt(req.params.limit))   
+    .populate('uid')
+    .exec(async (err, post) => {
+      if (err) return console.log(err);
+      res.json(post)
+    })
   // const filter = await  Post.find().then(posts => posts.filter(post => post.user == '5f0c8313f199812daddd0d8a') )
 })
   
@@ -254,12 +278,12 @@ app.post('/addlogs',async (req, res)=>{
 })
 
 app.get('/get',async (req, res)=>{
-Post.find({lid:'1'})
- //.then(posts => res.json(posts) )
+  Post.find({ lid: '1' })
+    //.then(posts => res.json(posts) )
     .populate('uid')
-    .exec(async(err,post)=>{
-        if(err) return console.log(err); 
-        res.json(post)
+    .exec(async (err, post) => {
+      if (err) return console.log(err);
+      res.json(post)
     })
 })
 

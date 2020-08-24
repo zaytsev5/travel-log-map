@@ -4,10 +4,10 @@ import CarouselImage from './CarouseImage'
 //  import 'bootstrap/dist/css/bootstrap.min.css';
 import {
     BrowserRouter as Router,
-    Switch,
-    Route,
+   // Switch,
+   // Route,
     Link,
-    useParams
+  //  useParams
   } from "react-router-dom";
 // import { CarouselImage } from 'react-bootstrap';
   
@@ -17,22 +17,23 @@ const ImageView  = ({src,offShow,log,id,uid,name,url}) =>{
     const [loaded, setLoad] = useState(false)
     const [text, setText] = useState('')
     const [userId, setUid] = useState(null)
+    const [index, setIndex] = useState(5)
     const messagesEndRef = useRef(null)
     // const [val, setVal] = useState('')
 
     const scrollToBottom = () => {
-        console.log("gọi nè");
-        console.log(messagesEndRef);
+        console.log("its called");
+        // console.log(messagesEndRef);
         messagesEndRef.current.scrollIntoView({ behavior: "instant" })
     }
 
-    let index = 0;
+   // let index = 0;
     const getComments = async () =>{
         console.log("in");
         const response =  await fetch(`http://localhost:3000/info/${uid}`)
         const result = await response.json();
         setUid(result._id)
-        const res = await fetch(`http://localhost:3000/api/${id}/cmts`)
+        const res = await fetch(`http://localhost:3000/api/${id}/cmts/${index}`)
         const comments = await res.json();
         setComment(comments)
         setLoad(true)
@@ -42,6 +43,7 @@ const ImageView  = ({src,offShow,log,id,uid,name,url}) =>{
         setText(e.target.value)
       //  console.log(e.target.value);
     }
+    
     const handleClick = async (e) =>{
         console.log(id);
         fetch('http://localhost:3000/auto',{
@@ -83,16 +85,17 @@ const ImageView  = ({src,offShow,log,id,uid,name,url}) =>{
       //  console.log(index);
         
     }
-    const ts = () =>{
-        console.log("hihi");
-    }
+    // const ts = () =>{
+    //     console.log("hihi");
+    // }
     useEffect(()=>{
         scrollToBottom()
         getComments();
         console.log("hic hiic");
+        console.log(index);
 
         // setComment(cmt)
-    },[])
+    },[index])
     const styleDiv = {
         width:'100%',
         height:'100%',
@@ -195,6 +198,7 @@ const ImageView  = ({src,offShow,log,id,uid,name,url}) =>{
                     }}  
                     >
                    { loaded ?
+                    
                         comments.map((cmt,index) =>(
                             <React.Fragment key={index}>
                             
@@ -211,7 +215,9 @@ const ImageView  = ({src,offShow,log,id,uid,name,url}) =>{
                             </React.Fragment>
                         ))
                         
+                       
                     : <Loading/>}
+                    
                     <div 
                         // style={{
                         //     fontSize:'10px',
@@ -221,17 +227,31 @@ const ImageView  = ({src,offShow,log,id,uid,name,url}) =>{
                         //     cursor:'pointer'
                         // }}
                         // onClick={()=>console.log('clicked loadmore')}
-                        ref={messagesEndRef} ></div> 
+                        ref={messagesEndRef} >
+                           
+                    </div> 
                     
                         {
                         
                         uid &&
                         <>
+                        <div
+                            style={{
+                                fontSize:'10px',
+                                // position:'absolute',
+                                marginLeft:'60%',
+                                // marginTop:'-10px',
+                                marginBottom:'5px'
+                            }}
+                        >
+                            <span onClick={()=>setIndex(index+5)}>load more comments</span>
+                        </div>
                          <textarea
                                 style={{
                                     width: '95%',
                                     height: '35px',
-                                    fontSize:'14px'
+                                    fontSize:'14px',
+                                    marginTop:'5px'
                                   
                                 }}
                                 placeholder="enter some your review.."

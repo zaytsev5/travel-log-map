@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 const Clock  = () =>{
     const [time, setTime] =  useState('')
-    const listDate = ['Noday','Monday','Tuesday','Wednesday','Thursday','Fridaty','Saturday','Sunday']
+    const listDate = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
     useEffect(()=>{
         setInterval(() => {
             const today = new Date()
-            setTime(`${listDate[today.getDay()]}, ${today.getHours()} : ${today.getMinutes() >= 10 ? today.getMinutes() : '0'+today.getMinutes()} `)
+            setTime(`${listDate[today.getDay()]}, ${today.getHours() >= 10 ? today.getHours() : '0'+today.getHours()} : ${today.getMinutes() >= 10 ? today.getMinutes() : '0'+today.getMinutes()} `)
         }, 1000);
     },[])
         return (

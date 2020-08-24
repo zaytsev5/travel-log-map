@@ -3,10 +3,10 @@ import ReactMapGL, { Marker, Popup} from 'react-map-gl';
 // import imgs from '../src/images'
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
+  // Switch,
+  // Route,
   Link,
-  useParams
+ // useParams
 } from "react-router-dom";
 import ImageView from './components/ImageView';
 import AddBox from './components/AddBox'
@@ -115,26 +115,7 @@ const Mapbox = () => {
   };
   
 
-  const getUserPosition = async() =>{
-    var getPosition = function (options) {
-      return new Promise(function (resolve, reject) {
-        navigator.geolocation.getCurrentPosition(resolve, reject, options);
-      });
-    }
-    const position = await getPosition();
-    const logEntries = [
-      {
-        id:1,
-        latitude:position.coords.latitude,
-        longitude:position.coords.longitude,
-        title: 'Bach Khoa University',
-        comments: 'This is the best university of Vietnam',
-        image: ' http://localhost:5000/img2.png'
-      }
-    ]
-    setLogEntries(logEntries);
-    console.log(logEntries);
-  }
+  
  
 
 
