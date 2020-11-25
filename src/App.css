@@ -4,7 +4,7 @@
 }
 html{
   background-color:rgb(52, 51, 51);
-  overflow: hidden;
+  overflow-y:scroll ;
 }
 *{
   font-family: 'Baloo Da 2', cursive;
@@ -96,4 +96,7 @@ input{
 }
 .mapboxgl-ctrl-logo , .mapboxgl-ctrl-bottom-right{
   visibility: hidden;
+}
+.action_comments:hover{
+  text-decoration: underline;
 }

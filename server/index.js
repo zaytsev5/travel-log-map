@@ -9,13 +9,11 @@ var mongoose = require('mongoose')
 var Log = require('./models/Log')
 var {Person, Post,User} = require('./models/Combine')
 var session = require('express-session')
-var passport = require('passport'),
-FacebookStrategy = require('passport-facebook').Strategy
-require('dotenv').config();
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
+var passport = require('./config/passport')
 
-const expires = 0.5 * 60 * 1000
+const expires =  60 * 1000
 const limit = 5;
 
 app.use(cookieParser());
@@ -33,63 +31,14 @@ app.use(
     secret: 'secret',
     resave: true,
     saveUninitialized: true,
-    // cookie:{
-    //   expires : expires
-    // }
+    cookie:{
+      expires : expires
+    }
    
   })
 );
 // Setup passport 
-passport.serializeUser(function(user, done){
-  done(null, user);
-})
 
-passport.deserializeUser(function(user, done){
-  done(null, user);
-})
-
-passport.use(new FacebookStrategy({
-  clientID: '730744481088426',
-  clientSecret: 'f2cbdf08df66bef2bbbf0f3643363538',
-  callbackURL: "http://localhost:3000/auth/facebook/callback",
-  profileFields: ['id', 'displayName','photos', 'email'],
-  enableProof: true
-},
-function(accessToken, refreshToken, profile, done) {
-  console.log(profile._json);
-  // console.log(accessToken);
-
-  User.findOneAndUpdate({ id: profile._json.id },{ image: profile._json.picture.data.url },{
-    new: true
-  })
-    .then(async user => {
-      if (user) {
-      //  User.findOneAndUpdate({ id: profile._json.id }, { image: profile._json.picture.data.url }, function (error, result) {
-       //   if (error) return;
-          console.log("OK");
-
-          return done(null, profile);
-          //     // do something with the document
-       // });
-      } else {
-        console.log("Not logged yet");
-        //adding user to mongodb 
-        const newUser = new User({
-          id: profile._json.id,
-          name: profile._json.name,
-          email: profile._json.email,
-          password: Math.random().toString(16).substring(8),
-          image: profile._json.picture.data.url
-        })
-        newUser.save()
-          .then(res => done(null, profile))
-      }
-
-    })
-    
-
-}
-));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -147,6 +96,10 @@ app.get('/me',fowardAuthicated,(req, res)=>{
   //console.log(req.user);
 })
 
+app.get('/login/success', (req, res) => {
+  res.send("Logged in successfully...")
+})
+
 app.get("/auth/login/success", fowardAuthicated,(req, res) => {
   
   if (req.user) {
@@ -164,6 +117,7 @@ app.get('/user',(req, res)=>{
     console.log(req.user.id);
     User.findOne({id: req.user.id}, (err, user) => {
       if (err) return res.send("error");
+   
       console.log(user);
       FB.setAccessToken(user.accessToken);
       FB.api('/me/accounts', (pages) => {
@@ -186,7 +140,7 @@ passport.authenticate('facebook',{ scope: ['email']})
 
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', {
-    successRedirect: 'http://localhost:9000',
+    successRedirect: '/login/success',
     failureRedirect: "/auth/login/failed"
   })
 
@@ -205,8 +159,8 @@ app.get('/log/:id', (req, res) => {
     .populate('uid')
     .exec(async (err, post) => {
       if (err) return console.log(err);
-      console.log(post);
-      res.json(post)
+    //  console.log(post);
+      res.status(200).json(post)
     })
   // const filter = await  Post.find().then(posts => posts.filter(post => post.user == '5f0c8313f199812daddd0d8a') )
 })
@@ -255,7 +209,7 @@ app.get('/info/:id',(req,res) =>{
 
 app.post('/auto', async (req, res)=>{
   const {lid,uid, title, body} = req.body;
-  console.log(req.body);
+// console.log(req.body);
   const post = new Post({lid,uid,title, body})
   post.save()
   .then(post =>{
@@ -268,7 +222,7 @@ app.post('/auto', async (req, res)=>{
 
 app.post('/addlogs',async (req, res)=>{
   const {id,title,latitude,longitude,comments,author,visitDate,image} = req.body
-  console.log(req.body);
+ // console.log(req.body);
   const log = new Log({id,title,latitude,longitude,comments,author,visitDate,image})
   log.save()
   .then(log =>{
@@ -376,5 +330,5 @@ app.post('/uploads', upload.array('blogimage', 5), function(req, res, next) {
 
 app.listen(3000,()=>{
     console.log('Server started on port 3000')
-    console.log(process.env.DB_NAME);
+    // console.log(process.env.DB_NAME);
 })

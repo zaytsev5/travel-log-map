@@ -1,8 +1,9 @@
 import React, { useState} from 'react';
 import img  from '../images/refresh.png'
+import { showAuthWindow } from '../actions/userActions'
 
-const AddBox = ({reload,logged,name}) =>{
-   // console.log(lng);
+const AddBox = (props) =>{
+    console.log("im");
     const [title, setTitle] = useState("");
     const [latitude, setlatitude] = useState("");
     const [longitude, setlongitude] = useState("");
@@ -22,6 +23,8 @@ const AddBox = ({reload,logged,name}) =>{
         textAlign:'cEnter',
         paddingTop:'5px'
     }
+    
+
     const handleChange = (e) =>{
         //setValue(e.target.value)
     }
@@ -40,7 +43,7 @@ const AddBox = ({reload,logged,name}) =>{
                 "latitude":latitude,
                 "longitude":longitude,
                 "comments" :comments,
-                "author":name,
+                "author":props.name,
                 "visitDate":visitDate,
                 "image":image
              })
@@ -49,7 +52,7 @@ const AddBox = ({reload,logged,name}) =>{
         .then(result =>{
             if(result.done){
                 console.log("successfully");
-                reload();
+                props.reload();
                 setLoad(false)
             }else{
                 alert("An error occured!")
@@ -57,7 +60,7 @@ const AddBox = ({reload,logged,name}) =>{
         })
     }
     return (
-       logged ? <div style= {style}>
+       props.logged ? <div style= {style}>
             <h3>Dedicate your experience to people</h3>
             <input type="text" placeholder="Enter title" style={{
                                 width:'90%',
@@ -155,12 +158,18 @@ const AddBox = ({reload,logged,name}) =>{
                 backgroundColor: '#FFF',
                 boxShadow: '0 1px 2px rgba(0,0,0,.1)',
                 borderRadius: '3px',
-                textAlign: 'cEnter',
+                textAlign: 'center',
                 paddingTop: '5px'
         }}>
-        < a style={{textDecoration:'none',color:'#4267b2'}}
-          href='http://localhost:3000/auth/facebook'
-        >Login to share your amazing places</a>
+        <div style={{textDecoration:'none',color:'#4267b2'}}
+          onClick ={() =>{ showAuthWindow({
+            path: "http://localhost:3000/auth/facebook",
+            callback: function(){
+
+               window.location.reload()
+            }
+        })}}
+        >Login to share your amazing places</div>
       </div>
     )
 }
