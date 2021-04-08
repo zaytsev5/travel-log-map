@@ -14,12 +14,12 @@ export default function(state = initialState, action) {
         message:'You have got user info..'
 
       };
-      case USER_LOGOUT:
-        return {
-          ...state,
-          user: action.payload,
-          message:'You have logged out..'
-        };
+    case USER_LOGOUT:
+      return {
+        ...state,
+        user: action.payload,
+        message:'You have logged out..'
+      };
     default:
       return state;
   }

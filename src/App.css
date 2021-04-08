@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+Chettan+2&family=Baloo+Da+2&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300&display=swap');
 .App {
   text-align: center;
 }
@@ -7,7 +7,7 @@ html{
   overflow-y:scroll ;
 }
 *{
-  font-family: 'Baloo Da 2', cursive;
+  font-family: 'Nunito Sans', sans-serif;
 }
 .mapboxgl-popup-tip{
   display: none;
@@ -28,7 +28,7 @@ h2{
   border:1px solid #ebedeb;
   border-radius: 2px;
   padding: 5px 5px;
-  font-family: 'Baloo Chettan 2', cursive;
+  font-family: 'Nunito Sans', sans-serif;
   font-size: 12px;
   display: relative;
   /* display: flex; */

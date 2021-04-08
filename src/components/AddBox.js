@@ -1,8 +1,8 @@
-import React, { useState} from 'react';
-import img  from '../images/refresh.png'
+import React, { useState } from 'react';
+import img from '../images/refresh.png'
 import { showAuthWindow } from '../actions/userActions'
 
-const AddBox = (props) =>{
+const AddBox = (props) => {
     console.log("im");
     const [title, setTitle] = useState("");
     const [latitude, setlatitude] = useState("");
@@ -13,93 +13,87 @@ const AddBox = (props) =>{
     const [loading, setLoad] = useState(false)
 
     const style = {
-        position:'absolute',
-        width:'330px',
-        height:'370px',
-        margin:'50px 50px',
-        backgroundColor:'#FFF',
-        boxShadow:'0 1px 2px rgba(0,0,0,.1)',
-        borderRadius:'3px',
-        textAlign:'cEnter',
-        paddingTop:'5px'
+        position: 'absolute',
+        width: '330px',
+        height: '370px',
+        margin: '50px 50px',
+        backgroundColor: '#FFF',
+        boxShadow: '0 1px 2px rgba(0,0,0,.1)',
+        borderRadius: '3px',
+        textAlign: 'cEnter',
+        paddingTop: '5px'
     }
-    
 
-    const handleChange = (e) =>{
+
+    const handleChange = (e) => {
         //setValue(e.target.value)
     }
-    const handleAdd = () =>{
-        if(title.length == 0 || latitude.length==0 || longitude.length==0 || comments.length ==0|| visitDate.length ==0 )
+    const handleAdd = () => {
+        if (title.length == 0 || latitude.length == 0 || longitude.length == 0 || comments.length == 0 || visitDate.length == 0)
             return alert('Fill out this fields')
         setLoad(true)
-        fetch('http://localhost:3000/addlogs',{
+        fetch('http://localhost:3000/addlogs', {
             method: 'post',
-            headers:{
+            headers: {
                 'Content-Type': 'application/json'
             },
-            body:JSON.stringify({
-                "id":new Date().getTime(),
-                "title":title,
-                "latitude":latitude,
-                "longitude":longitude,
-                "comments" :comments,
-                "author":props.name,
-                "visitDate":visitDate,
-                "image":image
-             })
+            body: JSON.stringify({
+                "id": new Date().getTime(),
+                "title": title,
+                "latitude": latitude,
+                "longitude": longitude,
+                "comments": comments,
+                "author": props.name,
+                "visitDate": visitDate,
+                "image": image
+            })
         })
-        .then(res => res.json())
-        .then(result =>{
-            if(result.done){
-                console.log("successfully");
-                props.reload();
-                setLoad(false)
-            }else{
-                alert("An error occured!")
-            }
-        })
+            .then(res => res.json())
+            .then(result => {
+                if (result.done) {
+                    console.log("successfully");
+                    props.reload();
+                    setLoad(false)
+                } else {
+                    alert("An error occured!")
+                }
+            })
     }
     return (
-       props.logged ? <div style= {style}>
+        props.logged ? <div style={style}>
             <h3>Dedicate your experience to people</h3>
             <input type="text" placeholder="Enter title" style={{
-                                width:'90%',
-                                height:'35px',
-                                marginBottom:'10px'
-                            }} onChange ={(e)=>setTitle(e.target.value)}  />
+                width: '90%',
+                height: '35px',
+                marginBottom: '10px'
+            }} onChange={(e) => setTitle(e.target.value)} />
             <input type="text" placeholder="Enter latitude" style={{
-                                width:'40%',
-                                height:'35px',
-                                marginBottom:'10px',
-                                marginRight:'30px'
-                            }} onChange ={(e)=>setlatitude(e.target.value)} />
+                width: '40%',
+                height: '35px',
+                marginBottom: '10px',
+                marginRight: '30px'
+            }} onChange={(e) => setlatitude(e.target.value)} />
             <input type="text" placeholder="Enter longtiude" style={{
-                                width:'40%',
-                                height:'35px',
-                                marginBottom:'10px'
-                            }} onChange ={(e)=>setlongitude(e.target.value) }/>
+                width: '40%',
+                height: '35px',
+                marginBottom: '10px'
+            }} onChange={(e) => setlongitude(e.target.value)} />
             <input type="text" placeholder="Enter comments" style={{
-                                width:'90%',
-                                height:'35px',
-                                marginBottom:'10px'
-                            }} onChange ={(e)=>setcomments(e.target.value) }/>
-            {/* <input type="text" placeholder="enter author" style={{
-                                width:'90%',
-                                height:'35px',
-                                marginBottom:'10px'
-                            }} onChange ={(e)=>setauthor(e.target.value)} 
-                            value={name}/> */}
+                width: '90%',
+                height: '35px',
+                marginBottom: '10px'
+            }} onChange={(e) => setcomments(e.target.value)} />
             <input type="text" placeholder="Enter visitdate" style={{
-                                width:'45%',
-                                height:'35px',
-                                marginBottom:'10px',
-                                transform:'translate(-50%,0)'
-                            }} onChange ={(e)=>setvisitDate(e.target.value)} />
+                width: '45%',
+                height: '35px',
+                marginBottom: '10px',
+                transform: 'translate(-50%,0)'
+            }} onChange={(e) => setvisitDate(e.target.value)} />
             <input type="text" placeholder="Enter image link" style={{
-                                width:'90%',
-                                height:'35px',
-                                marginBottom:'10px'
-                            }} onChange ={(e)=>setimage(e.target.value) }/>
+                width: '90%',
+                height: '35px',
+                marginBottom: '10px'
+            }} onChange={(e) => setimage(e.target.value)} />
             {/* <input id="f02" placeholder="Enter image" style={{
                                 width:'70%',
                                 height:'35px',
@@ -115,8 +109,8 @@ const AddBox = (props) =>{
                                 border:'1px solid grey',
                                 fontSize:'15px'
                             }} for="f02">Upload images to share</label> */}
-           
-            { !loading ?
+
+            {!loading ?
                 <button type="submit"
                     style={{
                         padding: '5px 50px',
@@ -124,12 +118,12 @@ const AddBox = (props) =>{
                         backgroundColor: '#333',
                         border: '1px solid black',
                         borderRadius: '2px',
-                        color:'white'
+                        color: 'white'
                     }}
                     onClick={() => handleAdd()}
 
-                >Mark it</button> 
-                : 
+                >Mark it</button>
+                :
                 <button
                     style={{
                         padding: '5px 50px',
@@ -137,17 +131,17 @@ const AddBox = (props) =>{
                         backgroundColor: 'white',
                         border: '1px solid black',
                         borderRadius: '2px',
-                        color:'#4267b2'
+                        color: '#4267b2'
 
                     }}
 
                 >
                     <img className="loader" src={img} width={25} height={25} />
-                </button> 
+                </button>
             }
 
-        </div> : 
-        <div style={{
+        </div> :
+            <div style={{
                 position: 'absolute',
                 width: '330px',
                 padding: '5px 10px',
@@ -160,17 +154,19 @@ const AddBox = (props) =>{
                 borderRadius: '3px',
                 textAlign: 'center',
                 paddingTop: '5px'
-        }}>
-        <div style={{textDecoration:'none',color:'#4267b2'}}
-          onClick ={() =>{ showAuthWindow({
-            path: "http://localhost:3000/auth/facebook",
-            callback: function(){
+            }}>
+                <div style={{ textDecoration: 'none', color: '#4267b2', fontWeight: '700' }}
+                    onClick={() => {
+                        showAuthWindow({
+                            path: "http://localhost:3000/auth/facebook",
+                            callback: function () {
 
-               window.location.reload()
-            }
-        })}}
-        >Login to share your amazing places</div>
-      </div>
+                                window.location.reload()
+                            }
+                        })
+                    }}
+                >Login to share your amazing places</div>
+            </div>
     )
 }
 export default AddBox;

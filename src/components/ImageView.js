@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Loading from './Loading'
 import CarouselImage from './CarouseImage'
 import {
@@ -8,6 +8,7 @@ import {
 
 
 const ImageView = ({ src, offShow, log, id, uid, name, url }) => {
+    
     console.log(uid);
     const [comments, setComment] = useState([])
     const [loaded, setLoad] = useState(false)
@@ -233,7 +234,7 @@ const ImageView = ({ src, offShow, log, id, uid, name, url }) => {
                                         borderRadius: '50%',
                                         marginRight: '5px'
                                     }} />
-                                    <span><strong style={{ marginRight: '5px' }}>{cmt.uid.name}: </strong></span>{cmt.title}</p>
+                                    <span><strong  style={{ marginRight: '5px',fontWeight:'700' }}>{cmt.uid.name}: </strong></span>{cmt.title}</p>
                             </React.Fragment>
                         ))
 
